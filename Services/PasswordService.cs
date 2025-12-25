@@ -1,0 +1,46 @@
+// Path: Services/PasswordService.cs
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using AddisBookingAdmin.Models;
+
+namespace AddisBookingAdmin.Services
+{
+    public class PasswordService
+    {
+        public void HashPassword(User user, string password)
+        {
+            // Generate salt
+            byte[] salt = new byte[128 / 8];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(salt);
+            }
+
+            // Hash password
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 10000,
+                numBytesRequested: 256 / 8
+            ));
+
+            user.PasswordHash = hashed;
+            user.PasswordSalt = Convert.ToBase64String(salt);
+        }
+
+        public bool VerifyPassword(User user, string password)
+        {
+            var salt = Convert.FromBase64String(user.PasswordSalt);
+            var hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 10000,
+                numBytesRequested: 256 / 8
+            ));
+
+            return hashed == user.PasswordHash;
+        }
+    }
+}
