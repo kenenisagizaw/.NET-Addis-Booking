@@ -1,0 +1,45 @@
+# .gitignore for ASP.NET Core / .NET projects
+
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+*.sln.iml
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Publish output
+wwwroot/lib/
+
+# Others
+*.db
+*.sqlite
+*.pdb
+
+# Entity Framework Migrations
+Migrations/*Designer.cs
+Migrations/*Snapshot.cs
+
+# Secret files
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json
