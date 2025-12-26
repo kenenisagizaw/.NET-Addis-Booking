@@ -1,0 +1,27 @@
+@model IEnumerable<AddisBookingAdmin.Models.Service>
+@{
+    ViewData["Title"] = "All Services";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>All Services</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Service</th>
+            <th>Provider</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var service in Model)
+        {
+            <tr>
+                <td>@service.Name</td>
+                <td>@service.Provider.FullName</td>
+                <td>@service.Price</td>
+            </tr>
+        }
+    </tbody>
+</table>
