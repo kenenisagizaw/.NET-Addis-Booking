@@ -1,0 +1,37 @@
+@model IEnumerable<AddisBookingAdmin.Models.User>
+@{
+    ViewData["Title"] = "User Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>User Management</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Active</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.FullName</td>
+                <td>@user.Email</td>
+                <td>@user.Role</td>
+                <td>@(user.IsActive ? "Yes" : "No")</td>
+                <td>
+                    <form asp-action="ToggleBlock" asp-route-id="@user.Id" method="post">
+                        <button class="btn btn-sm @(user.IsActive ? "btn-danger" : "btn-success")">
+                            @(user.IsActive ? "Block" : "Unblock")
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
