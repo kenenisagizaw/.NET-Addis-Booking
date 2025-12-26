@@ -1,5 +1,3 @@
-// Path: Controllers/ProviderController.cs
-
 using AddisBookingAdmin.Data;
 using AddisBookingAdmin.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -9,9 +7,8 @@ using System.Security.Claims;
 
 namespace AddisBookingAdmin.Controllers
 {
-    [ApiController]
-    [Route("api/provider")]
-    public class ProviderController : ControllerBase
+    [Authorize]
+    public class ProviderController : Controller
     {
         private readonly AppDbContext _context;
 
@@ -20,16 +17,31 @@ namespace AddisBookingAdmin.Controllers
             _context = context;
         }
 
-        // User applies to become provider
-        [HttpPost("apply")]
-        [Authorize]
-        public async Task<IActionResult> Apply([FromBody] ProviderOnboardDto model)
+
+        // GET: /Provider/Apply
+        [Authorize(Roles = "Customer")]
+        public IActionResult Apply()
         {
+            return View();
+        }
+
+        // POST: /Provider/Apply
+        [Authorize(Roles = "Customer")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Apply(ProviderOnboardDto model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var user = await _context.Users.FindAsync(userId);
 
             if (user == null) return Unauthorized();
-            if (user.IsProvider) return BadRequest("You have already applied.");
+            if (user.IsProvider)
+            {
+                TempData["Error"] = "You have already applied.";
+                return RedirectToAction(nameof(Apply));
+            }
 
             user.IsProvider = true;
             user.ProviderApproved = false;
@@ -38,13 +50,13 @@ namespace AddisBookingAdmin.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Provider application submitted. Waiting for admin approval." });
+            TempData["Message"] = "Provider application submitted. Waiting for admin approval.";
+            return RedirectToAction("Index", "Home");
         }
 
-        // Admin: list providers
-        [HttpGet("all")]
+        // Admin: List all providers
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllProviders()
+        public async Task<IActionResult> AllProviders()
         {
             var providers = await _context.Users
                 .Where(u => u.IsProvider)
@@ -59,12 +71,13 @@ namespace AddisBookingAdmin.Controllers
                 })
                 .ToListAsync();
 
-            return Ok(providers);
+            return View(providers);
         }
 
-        // Admin: approve provider
-        [HttpPost("approve/{id}")]
+        // Admin: Approve provider
         [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApproveProvider(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -75,12 +88,14 @@ namespace AddisBookingAdmin.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Provider approved successfully." });
+            TempData["Message"] = "Provider approved successfully.";
+            return RedirectToAction(nameof(AllProviders));
         }
 
-        // Admin: deny provider
-        [HttpPost("deny/{id}")]
+        // Admin: Deny provider
         [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DenyProvider(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -92,7 +107,8 @@ namespace AddisBookingAdmin.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Provider denied." });
+            TempData["Message"] = "Provider denied.";
+            return RedirectToAction(nameof(AllProviders));
         }
     }
 }
