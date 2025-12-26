@@ -1,0 +1,39 @@
+@model IEnumerable<AddisBookingAdmin.Models.Service>
+
+@{
+    ViewData["Title"] = "My Services";
+}
+
+<h2>My Services</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Add New Service</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var service in Model)
+        {
+            <tr>
+                <td>@service.Name</td>
+                <td>@service.Price.ToString("C")</td>
+                <td>@service.Description</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@service.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@service.Id" class="btn btn-sm btn-info">Details</a>
+                    <form asp-action="Delete" asp-route-id="@service.Id" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

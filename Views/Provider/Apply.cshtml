@@ -1,0 +1,52 @@
+@{
+    ViewData["Title"] = "Apply to be a Provider";
+}
+
+<h2>Apply to Become a Provider</h2>
+
+<div id="message" style="color:green;"></div>
+<div id="error" style="color:red;"></div>
+
+<form id="applyForm">
+    <div class="form-group">
+        <label for="nationalId">National ID Document URL</label>
+        <input type="text" id="nationalId" name="nationalIdDocUrl" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="businessDoc">Business Document URL</label>
+        <input type="text" id="businessDoc" name="businessDocUrl" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Submit Application</button>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#applyForm').submit(function (e) {
+                e.preventDefault();
+
+                const data = {
+                    nationalIdDocUrl: $('#nationalId').val(),
+                    businessDocUrl: $('#businessDoc').val()
+                };
+
+                $.ajax({
+                    url: '/api/provider/apply',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (res) {
+                        $('#message').text(res.message);
+                        $('#error').text('');
+                    },
+                    error: function (xhr) {
+                        const err = xhr.responseJSON?.message || 'Something went wrong.';
+                        $('#error').text(err);
+                        $('#message').text('');
+                    }
+                });
+            });
+        });
+    </script>
+}
