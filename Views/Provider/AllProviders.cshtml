@@ -1,0 +1,52 @@
+@model IEnumerable<AddisBookingAdmin.Models.User>
+@{
+    ViewData["Title"] = "All Providers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>National ID Doc</th>
+            <th>Business Doc</th>
+            <th>Approved</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var provider in Model)
+        {
+            <tr>
+                <td>@provider.FullName</td>
+                <td>@provider.Email</td>
+                <td><a href="@provider.NationalIdDocUrl" target="_blank">View</a></td>
+                <td><a href="@provider.BusinessDocUrl" target="_blank">View</a></td>
+                <td>
+                    @if(provider.ProviderApproved)
+                    {
+                        <span class="badge bg-success">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">Pending</span>
+                    }
+                </td>
+                <td>
+                    @if(!provider.ProviderApproved)
+                    {
+                        <form asp-action="ApproveProvider" asp-route-id="@provider.Id" method="post" style="display:inline">
+                            <button class="btn btn-success btn-sm">Approve</button>
+                        </form>
+                        <form asp-action="DenyProvider" asp-route-id="@provider.Id" method="post" style="display:inline">
+                            <button class="btn btn-danger btn-sm">Deny</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
