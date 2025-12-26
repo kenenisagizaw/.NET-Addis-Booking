@@ -24,10 +24,34 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<PasswordService>();
 builder.Services.AddScoped<JwtService>();
 
+// ----------------------
+// SESSION CONFIGURATION ✅
+// ----------------------
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(2);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// ----------------------
 // JWT Authentication
+// ----------------------
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                // Read JWT from cookie
+                context.Token = context.Request.Cookies["access_token"];
+                return Task.CompletedTask;
+            }
+        };
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -62,8 +86,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// IMPORTANT ORDER
-app.UseAuthentication(); // 🔐 MUST come before Authorization
+// ----------------------
+// IMPORTANT ORDER ✅
+// ----------------------
+app.UseSession();          // ✅ MUST come BEFORE auth
+
+app.UseAuthentication();   // 🔐
 app.UseAuthorization();
 
 // ======================
