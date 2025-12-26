@@ -6,10 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AddisBookingAdmin.Controllers
 {
-    [ApiController]
-    [Route("api/admin")]
     [Authorize(Roles = "Admin")]
-    public class AdminController : ControllerBase
+    public class AdminController : Controller
     {
         private readonly AppDbContext _context;
 
@@ -18,54 +16,75 @@ namespace AddisBookingAdmin.Controllers
             _context = context;
         }
 
-        // View all provider applications
-        [HttpGet("provider-applications")]
-        public async Task<IActionResult> GetApplications()
+        // GET: /Admin/Dashboard
+        public async Task<IActionResult> Dashboard()
         {
-            var apps = await _context.ProviderApplications
-                .Include(p => p.User)
-                .ToListAsync();
+            var totalUsers = await _context.Users.CountAsync();
+            var totalProviders = await _context.Users.CountAsync(u => u.IsProvider);
+            var totalApprovedProviders = await _context.Users.CountAsync(u => u.ProviderApproved);
+            var totalServices = await _context.Services.CountAsync();
 
-            return Ok(apps);
+            var model = new
+            {
+                TotalUsers = totalUsers,
+                TotalProviders = totalProviders,
+                TotalApprovedProviders = totalApprovedProviders,
+                TotalServices = totalServices
+            };
+
+            return View(model);
         }
 
-        [HttpGet("provider-applications/{id}")]
-[Authorize(Roles = "Admin")]
-public async Task<IActionResult> GetOne(int id)
-{
-    var app = await _context.ProviderApplications
-        .Include(p => p.User)
-        .FirstOrDefaultAsync(p => p.Id == id);
-
-    if (app == null)
-        return NotFound();
-
-    return Ok(app);
-}
-
-
-        // Approve / Reject provider
-        [HttpPost("provider-applications/{id}/decision")]
-        public async Task<IActionResult> Decide(int id, bool approve)
+        // GET: /Admin/Users
+        public async Task<IActionResult> Users()
         {
-            var app = await _context.ProviderApplications
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            var users = await _context.Users
+                .Select(u => new
+                {
+                    u.Id,
+                    u.FullName,
+                    u.Email,
+                    u.Role,
+                    u.IsProvider,
+                    u.ProviderApproved,
+                    u.CreatedAt
+                })
+                .ToListAsync();
 
-            if (app == null)
-                return NotFound();
+            return View(users);
+        }
 
-            app.Status = approve ? ApplicationStatus.Approved : ApplicationStatus.Rejected;
+        // POST: /Admin/BlockUser/5
+        [HttpPost]
+        public async Task<IActionResult> BlockUser(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return NotFound();
 
-            if (approve)
-            {
-                app.User.IsProvider = true;
-                app.User.ProviderApproved = true;
-                app.User.Role = UserRole.Provider;
-            }
-
+            user.IsActive = !user.IsActive;
             await _context.SaveChangesAsync();
-            return Ok("Decision saved");
+
+            TempData["Message"] = user.IsActive ? "User unblocked" : "User blocked";
+            return RedirectToAction(nameof(Users));
+        }
+
+        // GET: /Admin/PendingProviders
+        public async Task<IActionResult> PendingProviders()
+        {
+            var providers = await _context.Users
+                .Where(u => u.IsProvider && !u.ProviderApproved)
+                .Select(u => new
+                {
+                    u.Id,
+                    u.FullName,
+                    u.Email,
+                    u.NationalIdDocUrl,
+                    u.BusinessDocUrl,
+                    u.CreatedAt
+                })
+                .ToListAsync();
+
+            return View(providers);
         }
     }
 }
