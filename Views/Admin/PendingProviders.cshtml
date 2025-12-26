@@ -1,0 +1,42 @@
+@model IEnumerable<AddisBookingAdmin.Models.User>
+@{
+    ViewData["Title"] = "Pending Providers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Pending Provider Applications</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>National ID</th>
+            <th>Business Doc</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var provider in Model)
+        {
+            <tr>
+                <td>@provider.FullName</td>
+                <td>@provider.Email</td>
+                <td>
+                    <a href="@provider.NationalIdDocUrl" target="_blank">View</a>
+                </td>
+                <td>
+                    <a href="@provider.BusinessDocUrl" target="_blank">View</a>
+                </td>
+                <td>
+                    <form asp-action="ApproveProvider" asp-route-id="@provider.Id" method="post" style="display:inline">
+                        <button class="btn btn-success btn-sm">Approve</button>
+                    </form>
+                    <form asp-action="DenyProvider" asp-route-id="@provider.Id" method="post" style="display:inline">
+                        <button class="btn btn-danger btn-sm">Deny</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
