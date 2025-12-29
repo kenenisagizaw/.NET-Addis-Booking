@@ -19,7 +19,8 @@ namespace AddisBookingAdmin.Models
         public string PasswordSalt { get; set; } = string.Empty;
 
         // Navigation property for one-to-one relationship with Provider
-      public Provider? Provider { get; set; }    }
+        public Provider? Provider { get; set; }
+    }
 
     public enum UserRole
     {
