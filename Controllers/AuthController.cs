@@ -11,11 +11,13 @@ namespace AddisBookingAdmin.Controllers
     {
         private readonly AppDbContext _context;
         private readonly PasswordService _passwordService;
+        private readonly JwtService _jwtService;
 
-        public AuthController(AppDbContext context, PasswordService passwordService)
+        public AuthController(AppDbContext context, PasswordService passwordService, IConfiguration configuration)
         {
             _context = context;
             _passwordService = passwordService;
+            _jwtService = new JwtService(configuration);
         }
 
         // GET: /Auth/Login
@@ -42,6 +44,21 @@ namespace AddisBookingAdmin.Controllers
             HttpContext.Session.SetString("UserId", user.Id.ToString());
             HttpContext.Session.SetString("UserRole", user.Role.ToString());
 
+            // Issue JWT cookie for authentication
+            var token = _jwtService.GenerateToken(user);
+            Response.Cookies.Append("access_token", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddHours(1)
+            });
+
+            // Role-based redirect
+            if (user.Role == UserRole.Admin)
+                return RedirectToAction("Dashboard", "Admin");
+            if (user.Role == UserRole.Provider)
+                return RedirectToAction("Dashboard", "Provider");
             return RedirectToAction("Index", "Home");
         }
 
