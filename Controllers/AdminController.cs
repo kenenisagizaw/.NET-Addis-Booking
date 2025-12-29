@@ -83,14 +83,14 @@ public class AdminController : Controller
     // PROVIDERS MANAGEMENT
     // =========================
     public IActionResult Providers()
-{
-    var providers = _context.Providers
-        .Include(p => p.User)
-        .Include(p => p.Services)
-        .ToList();
+    {
+        var providers = _context.Providers
+            .Include(p => p.User)
+            .Include(p => p.Services)
+            .ToList();
 
-    return View(providers);
-}
+        return View(providers);
+    }
 
 
     // =========================
