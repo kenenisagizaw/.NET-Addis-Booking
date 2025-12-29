@@ -37,18 +37,21 @@
                         <a class="nav-link" href="@Url.Action("Apply", "Provider")">Apply as Provider</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("MyServices", "Service")">My Services</a>
+                        <a class="nav-link" href="@Url.Action("Index", "Service")">My Services</a>
                     </li>
                     @if (User.IsInRole("Admin"))
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="AdminMvc" asp-action="Users">Users</a>
+                            <a class="nav-link" asp-controller="Admin" asp-action="Users">Users</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="AdminMvc" asp-action="PendingProviders">Providers</a>
+                            <a class="nav-link" asp-controller="Admin" asp-action="Providers">Providers</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="AdminMvc" asp-action="Services">Services</a>
+                            <a class="nav-link" asp-controller="Admin" asp-action="Applications">PendingApplications</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Admin" asp-action="Services">Services</a>
                         </li>
                     }
                 </ul>
