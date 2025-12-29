@@ -1,114 +1,84 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using AddisBookingAdmin.Data;
 using AddisBookingAdmin.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace AddisBookingAdmin.Controllers
+[Authorize]
+public class ProviderController : Controller
 {
-    [Authorize]
-    public class ProviderController : Controller
+    private readonly AppDbContext _context;
+
+    public ProviderController(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public ProviderController(AppDbContext context)
+    // =========================
+    // APPLY TO BE PROVIDER
+    // =========================
+    [Authorize(Roles = "Customer")]
+    [HttpGet]
+    public IActionResult Apply() => View();
+
+    [Authorize(Roles = "Customer")]
+    [HttpPost]
+    public async Task<IActionResult> Apply(
+        string fullName,
+        string phone,
+        string businessName,
+        IFormFile nationalId,
+        IFormFile businessLicense)
+    {
+        if (nationalId == null || businessLicense == null)
         {
-            _context = context;
-        }
-
-
-        // GET: /Provider/Apply
-        [Authorize(Roles = "Customer")]
-        public IActionResult Apply()
-        {
+            ViewBag.Error = "Documents are required";
             return View();
         }
 
-        // POST: /Provider/Apply
-        [Authorize(Roles = "Customer")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Apply(ProviderOnboardDto model)
+        var uploads = Path.Combine("wwwroot/uploads");
+        Directory.CreateDirectory(uploads);
+
+        string SaveFile(IFormFile file)
         {
-            if (!ModelState.IsValid) return View(model);
+            var path = Path.Combine(
+                uploads,
+                Guid.NewGuid() + Path.GetExtension(file.FileName)
+            );
 
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var user = await _context.Users.FindAsync(userId);
-
-            if (user == null) return Unauthorized();
-            if (user.IsProvider)
-            {
-                TempData["Error"] = "You have already applied.";
-                return RedirectToAction(nameof(Apply));
-            }
-
-            user.IsProvider = true;
-            user.ProviderApproved = false;
-            user.NationalIdDocUrl = model.NationalIdDocUrl;
-            user.BusinessDocUrl = model.BusinessDocUrl;
-
-            await _context.SaveChangesAsync();
-
-            TempData["Message"] = "Provider application submitted. Waiting for admin approval.";
-            return RedirectToAction("Index", "Home");
+            using var stream = new FileStream(path, FileMode.Create);
+            file.CopyTo(stream);
+            return path.Replace("wwwroot", "");
         }
 
-        // Admin: List all providers
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AllProviders()
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var application = new ProviderApplication
         {
-            var providers = await _context.Users
-                .Where(u => u.IsProvider)
-                .Select(u => new
-                {
-                    u.Id,
-                    u.FullName,
-                    u.Email,
-                    u.ProviderApproved,
-                    u.NationalIdDocUrl,
-                    u.BusinessDocUrl
-                })
-                .ToListAsync();
+            UserId = userId,
+            FullName = fullName,
+            Phone = phone,
+            BusinessName = businessName,
+            NationalIdPath = SaveFile(nationalId),
+            BusinessLicensePath = SaveFile(businessLicense),
+            Status = ApplicationStatus.Pending
+        };
 
-            return View(providers);
-        }
+        _context.ProviderApplications.Add(application);
+        await _context.SaveChangesAsync();
 
-        // Admin: Approve provider
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ApproveProvider(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null || !user.IsProvider) return NotFound();
+        return RedirectToAction("Index", "Home");
+    }
 
-            user.ProviderApproved = true;
-            user.Role = UserRole.Provider;
+    // =========================
+    // PROVIDER DASHBOARD
+    // =========================
+    [Authorize(Roles = "Provider")]
+    public IActionResult Dashboard()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var provider = _context.Providers.Single(p => p.UserId == userId);
 
-            await _context.SaveChangesAsync();
-
-            TempData["Message"] = "Provider approved successfully.";
-            return RedirectToAction(nameof(AllProviders));
-        }
-
-        // Admin: Deny provider
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DenyProvider(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null || !user.IsProvider) return NotFound();
-
-            user.IsProvider = false;
-            user.ProviderApproved = false;
-            user.Role = UserRole.Customer;
-
-            await _context.SaveChangesAsync();
-
-            TempData["Message"] = "Provider denied.";
-            return RedirectToAction(nameof(AllProviders));
-        }
+        return View(provider);
     }
 }
