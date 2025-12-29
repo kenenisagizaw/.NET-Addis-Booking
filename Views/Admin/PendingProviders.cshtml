@@ -15,18 +15,18 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var app in Model)
-    {
-        <tr>
-            <td class="border px-4 py-2">@app.FullName</td>
-            <td class="border px-4 py-2">@app.User?.Email</td>
-            <td class="border px-4 py-2">@app.BusinessName</td>
-            <td class="border px-4 py-2">@app.Phone</td>
-            <td class="border px-4 py-2">
-                <a asp-action="Approve" asp-route-id="@app.Id" class="btn btn-success btn-sm">Approve</a>
-                <a asp-action="Reject" asp-route-id="@app.Id" class="btn btn-danger btn-sm">Reject</a>
-            </td>
-        </tr>
-    }
+        @foreach (var app in Model)
+        {
+            <tr>
+                <td class="border px-4 py-2">@app.FullName</td>
+                <td class="border px-4 py-2">@app.User?.Email</td>
+                <td class="border px-4 py-2">@app.BusinessName</td>
+                <td class="border px-4 py-2">@app.Phone</td>
+                <td class="border px-4 py-2">
+                    <a asp-action="Approve" asp-route-id="@app.Id" class="btn btn-success btn-sm">Approve</a>
+                    <a asp-action="Reject" asp-route-id="@app.Id" class="btn btn-danger btn-sm">Reject</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
