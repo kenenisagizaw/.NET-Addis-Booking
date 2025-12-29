@@ -1,90 +1,107 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using AddisBookingAdmin.Data;
 using AddisBookingAdmin.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace AddisBookingAdmin.Controllers
+[Authorize(Roles = "Admin")]
+public class AdminController : Controller
 {
-    [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
+    private readonly AppDbContext _context;
+
+    public AdminController(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public AdminController(AppDbContext context)
+    // =========================
+    // DASHBOARD
+    // =========================
+    public IActionResult Dashboard()
+    {
+        var model = new DashboardViewModel
         {
-            _context = context;
-        }
+            TotalUsers = _context.Users.Count(),
+            TotalProviders = _context.Providers.Count(),
+            TotalServices = _context.Services.Count(),
+            TotalPendingProviders = _context.ProviderApplications
+                .Count(a => a.Status == ApplicationStatus.Pending)
+        };
 
-        // GET: /Admin/Dashboard
-        public async Task<IActionResult> Dashboard()
+        return View(model);
+    }
+
+    // =========================
+    // PROVIDER APPLICATIONS
+    // =========================
+    public IActionResult Applications()
+    {
+        var apps = _context.ProviderApplications
+            .Where(a => a.Status == ApplicationStatus.Pending)
+            .Include(a => a.User)
+            .ToList();
+
+        return View(apps);
+    }
+
+    // APPROVE PROVIDER
+    public async Task<IActionResult> Approve(int id)
+    {
+        var app = _context.ProviderApplications
+            .Include(a => a.User)
+            .Single(a => a.Id == id);
+
+        app.Status = ApplicationStatus.Approved;
+
+        _context.Providers.Add(new Provider
         {
-            var totalUsers = await _context.Users.CountAsync();
-            var totalProviders = await _context.Users.CountAsync(u => u.IsProvider);
-            var totalApprovedProviders = await _context.Users.CountAsync(u => u.ProviderApproved);
-            var totalServices = await _context.Services.CountAsync();
+            UserId = app.UserId,
+            BusinessName = app.BusinessName,
+            Phone = app.Phone,
+            NationalIdPath = app.NationalIdPath,
+            BusinessLicensePath = app.BusinessLicensePath,
+            IsApproved = true
+        });
 
-            var model = new
-            {
-                TotalUsers = totalUsers,
-                TotalProviders = totalProviders,
-                TotalApprovedProviders = totalApprovedProviders,
-                TotalServices = totalServices
-            };
+        app.User.Role = UserRole.Provider;
 
-            return View(model);
-        }
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Applications));
+    }
 
-        // GET: /Admin/Users
-        public async Task<IActionResult> Users()
-        {
-            var users = await _context.Users
-                .Select(u => new
-                {
-                    u.Id,
-                    u.FullName,
-                    u.Email,
-                    u.Role,
-                    u.IsProvider,
-                    u.ProviderApproved,
-                    u.CreatedAt
-                })
-                .ToListAsync();
+    // REJECT PROVIDER
+    public async Task<IActionResult> Reject(int id)
+    {
+        var app = _context.ProviderApplications.Single(a => a.Id == id);
+        app.Status = ApplicationStatus.Rejected;
 
-            return View(users);
-        }
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Applications));
+    }
 
-        // POST: /Admin/BlockUser/5
-        [HttpPost]
-        public async Task<IActionResult> BlockUser(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null) return NotFound();
+    // =========================
+    // PROVIDERS MANAGEMENT
+    // =========================
+    public IActionResult Providers()
+{
+    var providers = _context.Providers
+        .Include(p => p.User)
+        .Include(p => p.Services)
+        .ToList();
 
-            user.IsActive = !user.IsActive;
-            await _context.SaveChangesAsync();
+    return View(providers);
+}
 
-            TempData["Message"] = user.IsActive ? "User unblocked" : "User blocked";
-            return RedirectToAction(nameof(Users));
-        }
 
-        // GET: /Admin/PendingProviders
-        public async Task<IActionResult> PendingProviders()
-        {
-            var providers = await _context.Users
-                .Where(u => u.IsProvider && !u.ProviderApproved)
-                .Select(u => new
-                {
-                    u.Id,
-                    u.FullName,
-                    u.Email,
-                    u.NationalIdDocUrl,
-                    u.BusinessDocUrl,
-                    u.CreatedAt
-                })
-                .ToListAsync();
+    // =========================
+    // USERS MANAGEMENT
+    // =========================
+    public IActionResult Users()
+    {
+        var users = _context.Users
+            .Include(u => u.Provider) // ✅ FIXED
+            .ToList();
 
-            return View(providers);
-        }
+        return View(users);
     }
 }
