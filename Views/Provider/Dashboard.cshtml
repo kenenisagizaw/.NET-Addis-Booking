@@ -1,32 +1,10 @@
-@{
-    ViewData["Title"] = "Provider Dashboard";
-}
+@model Provider
 
-<h1 class="text-3xl font-bold mb-4">My Services</h1>
+<h2>Provider Dashboard</h2>
 
-<a href="/Service/Create" class="bg-green-600 text-white px-4 py-2 rounded mb-4 inline-block">Add New Service</a>
+<p><strong>Business:</strong> @Model.BusinessName</p>
+<p><strong>Phone:</strong> @Model.Phone</p>
 
-<table class="min-w-full bg-white shadow rounded">
-    <thead>
-        <tr class="bg-gray-200 text-left">
-            <th class="p-2">Title</th>
-            <th class="p-2">Description</th>
-            <th class="p-2">Price</th>
-            <th class="p-2">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var service in Model)
-        {
-            <tr>
-                <td class="p-2">@service.Title</td>
-                <td class="p-2">@service.Description</td>
-                <td class="p-2">@service.Price</td>
-                <td class="p-2">
-                    <a href="/Service/Edit/@service.Id" class="text-blue-600 mr-2">Edit</a>
-                    <a href="/Service/Delete/@service.Id" class="text-red-600">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<a asp-controller="Service" asp-action="Index" class="btn btn-primary">
+    Manage Services
+</a>

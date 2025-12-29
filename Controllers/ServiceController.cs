@@ -19,6 +19,9 @@ namespace AddisBookingAdmin.Controllers
             _context = context;
         }
 
+        // =========================
+        // LIST ALL SERVICES (INDEX)
+        // =========================
         // GET: /Service
         public async Task<IActionResult> Index()
         {
@@ -26,14 +29,17 @@ namespace AddisBookingAdmin.Controllers
             var services = await _context.Services
                 .Where(s => s.ProviderId == providerId)
                 .ToListAsync();
+
             return View(services);
         }
 
+        // =========================
+        // DETAILS OF A SERVICE
+        // =========================
         // GET: /Service/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var service = await _context.Services
-                .FirstOrDefaultAsync(s => s.Id == id);
+            var service = await _context.Services.FindAsync(id);
             if (service == null) return NotFound();
 
             var providerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -42,6 +48,9 @@ namespace AddisBookingAdmin.Controllers
             return View(service);
         }
 
+        // =========================
+        // CREATE NEW SERVICE
+        // =========================
         // GET: /Service/Create
         public IActionResult Create()
         {
@@ -67,6 +76,9 @@ namespace AddisBookingAdmin.Controllers
             return View(service);
         }
 
+        // =========================
+        // EDIT EXISTING SERVICE
+        // =========================
         // GET: /Service/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
@@ -106,6 +118,9 @@ namespace AddisBookingAdmin.Controllers
             return View(service);
         }
 
+        // =========================
+        // DELETE SERVICE
+        // =========================
         // POST: /Service/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]

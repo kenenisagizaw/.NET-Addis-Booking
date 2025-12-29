@@ -1,52 +1,41 @@
 @{
-    ViewData["Title"] = "Apply to be a Provider";
+    ViewData["Title"] = "Apply to Become a Provider";
 }
 
 <h2>Apply to Become a Provider</h2>
 
-<div id="message" style="color:green;"></div>
-<div id="error" style="color:red;"></div>
-
-<form id="applyForm">
-    <div class="form-group">
-        <label for="nationalId">National ID Document URL</label>
-        <input type="text" id="nationalId" name="nationalIdDocUrl" class="form-control" required />
-    </div>
-    <div class="form-group">
-        <label for="businessDoc">Business Document URL</label>
-        <input type="text" id="businessDoc" name="businessDocUrl" class="form-control" required />
-    </div>
-    <button type="submit" class="btn btn-primary mt-3">Submit Application</button>
-</form>
-
-@section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#applyForm').submit(function (e) {
-                e.preventDefault();
-
-                const data = {
-                    nationalIdDocUrl: $('#nationalId').val(),
-                    businessDocUrl: $('#businessDoc').val()
-                };
-
-                $.ajax({
-                    url: '/api/provider/apply',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(data),
-                    success: function (res) {
-                        $('#message').text(res.message);
-                        $('#error').text('');
-                    },
-                    error: function (xhr) {
-                        const err = xhr.responseJSON?.message || 'Something went wrong.';
-                        $('#error').text(err);
-                        $('#message').text('');
-                    }
-                });
-            });
-        });
-    </script>
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
 }
+
+<form asp-action="Apply" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input name="fullName" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Phone</label>
+        <input name="phone" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Business Name</label>
+        <input name="businessName" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">National ID (PDF / Image)</label>
+        <input type="file" name="nationalId" class="form-control" accept=".pdf,image/*" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Business License (PDF / Image)</label>
+        <input type="file" name="businessLicense" class="form-control" accept=".pdf,image/*" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Submit Application
+    </button>
+</form>
