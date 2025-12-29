@@ -1,0 +1,58 @@
+@model IEnumerable<AddisBookingAdmin.Models.Provider>
+
+@{
+    ViewData["Title"] = "Providers";
+}
+
+<h2>Approved Providers</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Full Name</th>
+            <th>Business Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Approved</th>
+            <th>Services Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="7" class="text-center text-muted">
+                    No providers found
+                </td>
+            </tr>
+        }
+        else
+        {
+            int index = 1;
+            foreach (var provider in Model)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@provider.User.FullName</td>
+                    <td>@provider.BusinessName</td>
+                    <td>@provider.Phone</td>
+                    <td>@provider.User.Email</td>
+                    <td>
+                        @if (provider.IsApproved)
+                        {
+                            <span class="badge bg-success">Approved</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">Pending</span>
+                        }
+                    </td>
+                    <td>@(provider.Services?.Count ?? 0)</td>
+                </tr>
+
+                index++;
+            }
+        }
+    </tbody>
+</table>
