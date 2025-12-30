@@ -23,15 +23,26 @@ namespace AddisBookingAdmin.Controllers
         // LIST ALL SERVICES (INDEX)
         // =========================
         // GET: /Service
-        public async Task<IActionResult> Index()
-        {
-            var providerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var services = await _context.Services
-                .Where(s => s.ProviderId == providerId)
-                .ToListAsync();
+public async Task<IActionResult> Index()
+{
+    // Get the logged-in user's ID
+    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            return View(services);
-        }
+    // Find the Provider entity for this user
+    var provider = await _context.Providers
+        .Include(p => p.Services) // Include related services
+        .FirstOrDefaultAsync(p => p.UserId == userId);
+
+    if (provider == null)
+    {
+        // If no provider found for this user, return empty list or forbid
+        return Forbid();
+    }
+
+    // Pass the services to the view
+    return View(provider.Services);
+}
+
 
         // =========================
         // DETAILS OF A SERVICE
@@ -58,23 +69,35 @@ namespace AddisBookingAdmin.Controllers
         }
 
         // POST: /Service/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Service service)
-        {
-            var providerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            service.ProviderId = providerId;
+ [HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Create(Service service)
+{
+    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (ModelState.IsValid)
-            {
-                _context.Services.Add(service);
-                await _context.SaveChangesAsync();
-                TempData["Message"] = "Service created successfully.";
-                return RedirectToAction(nameof(Index));
-            }
+    // Get the provider for the current user
+    var provider = await _context.Providers.FirstOrDefaultAsync(p => p.UserId == userId);
+    if (provider == null) 
+        return Forbid("You are not registered as a provider yet.");
 
-            return View(service);
-        }
+    service.ProviderId = provider.Id;
+
+    if (!ModelState.IsValid)
+    {
+        var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                       .Select(e => e.ErrorMessage)
+                                       .ToList();
+        return Content("Validation errors: " + string.Join(", ", errors));
+    }
+
+    _context.Services.Add(service);
+    await _context.SaveChangesAsync();
+    TempData["Message"] = "Service created successfully.";
+
+    return RedirectToAction(nameof(Index));
+}
+
+
 
         // =========================
         // EDIT EXISTING SERVICE
