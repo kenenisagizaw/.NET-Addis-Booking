@@ -4,15 +4,22 @@
     ViewData["Title"] = "Service Details";
 }
 
-<h2>Service Details</h2>
+<h1>@ViewData["Title"]</h1>
 
-<div>
-    <h4>@Model.Name</h4>
-    <p><strong>Price:</strong> @Model.Price.ToString("C")</p>
-    <p><strong>Description:</strong> @Model.Description</p>
+<div class="mb-3">
+    <label class="form-label">Name:</label>
+    <p>@Model.Name</p>
 </div>
 
-<p>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</p>
+<div class="mb-3">
+    <label class="form-label">Price:</label>
+    <p>@Model.Price.ToString("C")</p>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Description:</label>
+    <p>@Model.Description</p>
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>
