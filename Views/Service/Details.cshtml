@@ -4,22 +4,37 @@
     ViewData["Title"] = "Service Details";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">@ViewData["Title"]</h4>
+        </div>
 
-<div class="mb-3">
-    <label class="form-label">Name:</label>
-    <p>@Model.Name</p>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label fw-bold text-muted">Name</label>
+                <p class="fs-5 mb-0">@Model.Name</p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold text-muted">Price</label>
+                <p class="fs-5 mb-0">@Model.Price.ToString("N2") Birr</p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold text-muted">Description</label>
+                <p class="mb-0">@Model.Description</p>
+            </div>
+        </div>
+
+        <div class="card-footer bg-light d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                ← Back to List
+            </a>
+
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                Edit Service
+            </a>
+        </div>
+    </div>
 </div>
-
-<div class="mb-3">
-    <label class="form-label">Price:</label>
-    <p>@Model.Price.ToString("C")</p>
-</div>
-
-<div class="mb-3">
-    <label class="form-label">Description:</label>
-    <p>@Model.Description</p>
-</div>
-
-<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-<a asp-action="Index" class="btn btn-secondary">Back to List</a>
