@@ -1,10 +1,19 @@
 @model Provider
 
-<h2>Provider Dashboard</h2>
+<div class="container py-4">
 
-<p><strong>Business:</strong> @Model.BusinessName</p>
-<p><strong>Phone:</strong> @Model.Phone</p>
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Provider Dashboard</h2>
+        </div>
+        <div class="card-body">
+            <p><strong>Business:</strong> <span class="text-secondary">@Model.BusinessName</span></p>
+            <p><strong>Phone:</strong> <span class="text-secondary">@Model.Phone</span></p>
 
-<a asp-controller="Service" asp-action="Index" class="btn btn-primary">
-    Manage Services
-</a>
+            <a asp-controller="Service" asp-action="Index" class="btn btn-primary mt-3">
+                <i class="bi bi-gear-fill me-1"></i> Manage Services
+            </a>
+        </div>
+    </div>
+
+</div>
