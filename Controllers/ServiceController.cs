@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace AddisBookingAdmin.Controllers
 {
@@ -19,145 +17,147 @@ namespace AddisBookingAdmin.Controllers
             _context = context;
         }
 
-        // =========================
-        // LIST ALL SERVICES (INDEX)
-        // =========================
+        // 🔑 Helper: Get ProviderId from logged-in User
+        private async Task<int?> GetProviderIdAsync()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdClaim))
+                return null;
+
+            int userId = int.Parse(userIdClaim);
+
+            var provider = await _context.Providers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.UserId == userId);
+
+            return provider?.Id;
+        }
+
+        // ===============================
         // GET: /Service
-public async Task<IActionResult> Index()
-{
-    // Get the logged-in user's ID
-    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        // ===============================
+        public async Task<IActionResult> Index()
+        {
+            var providerId = await GetProviderIdAsync();
+            if (providerId == null) return Forbid();
 
-    // Find the Provider entity for this user
-    var provider = await _context.Providers
-        .Include(p => p.Services) // Include related services
-        .FirstOrDefaultAsync(p => p.UserId == userId);
+            var services = await _context.Services
+                .Where(s => s.ProviderId == providerId)
+                .ToListAsync();
 
-    if (provider == null)
-    {
-        // If no provider found for this user, return empty list or forbid
-        return Forbid();
-    }
+            return View(services);
+        }
 
-    // Pass the services to the view
-    return View(provider.Services);
-}
-
-
-        // =========================
-        // DETAILS OF A SERVICE
-        // =========================
+        // ===============================
         // GET: /Service/Details/5
+        // ===============================
         public async Task<IActionResult> Details(int id)
         {
-            var service = await _context.Services.FindAsync(id);
-            if (service == null) return NotFound();
+            var providerId = await GetProviderIdAsync();
+            if (providerId == null) return Forbid();
 
-            var providerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            if (service.ProviderId != providerId) return Forbid();
+            var service = await _context.Services
+                .FirstOrDefaultAsync(s => s.Id == id && s.ProviderId == providerId);
+
+            if (service == null) return NotFound();
 
             return View(service);
         }
 
-        // =========================
-        // CREATE NEW SERVICE
-        // =========================
+        // ===============================
         // GET: /Service/Create
+        // ===============================
         public IActionResult Create()
         {
             return View();
         }
 
+        // ===============================
         // POST: /Service/Create
- [HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Create(Service service)
-{
-    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        // ===============================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Service service)
+        {
+            var providerId = await GetProviderIdAsync();
+            if (providerId == null) return Forbid();
 
-    // Get the provider for the current user
-    var provider = await _context.Providers.FirstOrDefaultAsync(p => p.UserId == userId);
-    if (provider == null) 
-        return Forbid("You are not registered as a provider yet.");
+            // ❗IMPORTANT: Provider is NOT posted from the form
+            service.ProviderId = providerId.Value;
 
-    service.ProviderId = provider.Id;
+            // Remove navigation validation error
+            ModelState.Remove("Provider");
 
-    if (!ModelState.IsValid)
-    {
-        var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                       .Select(e => e.ErrorMessage)
-                                       .ToList();
-        return Content("Validation errors: " + string.Join(", ", errors));
-    }
+            if (!ModelState.IsValid)
+                return View(service);
 
-    _context.Services.Add(service);
-    await _context.SaveChangesAsync();
-    TempData["Message"] = "Service created successfully.";
+            _context.Services.Add(service);
+            await _context.SaveChangesAsync();
 
-    return RedirectToAction(nameof(Index));
-}
+            return RedirectToAction(nameof(Index));
+        }
 
-
-
-        // =========================
-        // EDIT EXISTING SERVICE
-        // =========================
+        // ===============================
         // GET: /Service/Edit/5
+        // ===============================
         public async Task<IActionResult> Edit(int id)
         {
-            var service = await _context.Services.FindAsync(id);
-            if (service == null) return NotFound();
+            var providerId = await GetProviderIdAsync();
+            if (providerId == null) return Forbid();
 
-            var providerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            if (service.ProviderId != providerId) return Forbid();
+            var service = await _context.Services
+                .FirstOrDefaultAsync(s => s.Id == id && s.ProviderId == providerId);
+
+            if (service == null) return NotFound();
 
             return View(service);
         }
 
+        // ===============================
         // POST: /Service/Edit/5
+        // ===============================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Service service)
         {
-            if (id != service.Id) return BadRequest();
+            var providerId = await GetProviderIdAsync();
+            if (providerId == null) return Forbid();
 
-            var existingService = await _context.Services.FindAsync(id);
+            var existingService = await _context.Services
+                .FirstOrDefaultAsync(s => s.Id == id && s.ProviderId == providerId);
+
             if (existingService == null) return NotFound();
 
-            var providerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            if (existingService.ProviderId != providerId) return Forbid();
+            ModelState.Remove("Provider");
 
-            if (ModelState.IsValid)
-            {
-                existingService.Name = service.Name;
-                existingService.Price = service.Price;
-                existingService.Description = service.Description;
+            if (!ModelState.IsValid)
+                return View(service);
 
-                await _context.SaveChangesAsync();
-                TempData["Message"] = "Service updated successfully.";
-                return RedirectToAction(nameof(Index));
-            }
+            existingService.Name = service.Name;
+            existingService.Price = service.Price;
+            existingService.Description = service.Description;
 
-            return View(service);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        // =========================
-        // DELETE SERVICE
-        // =========================
+        // ===============================
         // POST: /Service/Delete/5
+        // ===============================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var service = await _context.Services.FindAsync(id);
-            if (service == null) return NotFound();
+            var providerId = await GetProviderIdAsync();
+            if (providerId == null) return Forbid();
 
-            var providerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            if (service.ProviderId != providerId) return Forbid();
+            var service = await _context.Services
+                .FirstOrDefaultAsync(s => s.Id == id && s.ProviderId == providerId);
+
+            if (service == null) return NotFound();
 
             _context.Services.Remove(service);
             await _context.SaveChangesAsync();
-            TempData["Message"] = "Service deleted successfully.";
 
             return RedirectToAction(nameof(Index));
         }
