@@ -1,47 +1,118 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* ------------------------- */
+/* General Styles            */
+/* ------------------------- */
 body {
-  margin-bottom: 60px;
-}
-
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
-}
-
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
-}
-
-/* Sidebar */
-.sidebar {
-    width: 250px;
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
-    position: sticky;
-    top: 0;
 }
 
-.sidebar .nav-link {
-    border-radius: 6px;
+/* Main content pushes footer down */
+main.main-content {
+    flex: 1;
 }
 
-.sidebar .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+/* ------------------------- */
+/* Admin Sidebar             */
+/* ------------------------- */
+#adminSidebar {
+    position: fixed;
+    top: 56px; /* navbar height */
+    left: 0;
+    width: 220px;
+    height: calc(100vh - 56px);
+    background-color: #212529;
+    color: #fff;
+    padding-top: 1rem;
+    z-index: 1030;
+    transition: transform 0.3s ease;
+}
+
+#adminSidebar .nav-link {
+    color: #fff;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+#adminSidebar .nav-link:hover,
+#adminSidebar .nav-link.active {
+    background-color: #343a40;
+    color: #ffc107;
+}
+
+/* Sidebar open state for mobile */
+body.sidebar-open #adminSidebar {
+    transform: translateX(0);
+}
+
+body.has-sidebar .main-content {
+    margin-left: 220px;
+}
+
+/* ------------------------- */
+/* Footer                     */
+/* ------------------------- */
+footer.footer {
+    flex-shrink: 0;
+}
+
+/* ------------------------- */
+/* Dark Mode Enhancements     */
+/* ------------------------- */
+[data-bs-theme="dark"] body {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+[data-bs-theme="dark"] .navbar,
+[data-bs-theme="dark"] footer {
+    background-color: #1f1f1f !important;
+}
+
+[data-bs-theme="dark"] #adminSidebar {
+    background-color: #1b1b1b;
+}
+
+[data-bs-theme="dark"] #adminSidebar .nav-link:hover,
+[data-bs-theme="dark"] #adminSidebar .nav-link.active {
+    background-color: #333 !important;
+    color: #ffca28 !important;
+}
+/* Table styling */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+    transition: background-color 0.2s ease;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+/* Badges */
+.badge {
+    font-size: 0.85rem;
+    padding: 0.4em 0.65em;
+}
+
+/* Buttons */
+.btn-outline-danger {
+    transition: all 0.2s ease;
+}
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+/* Modals */
+.modal-content {
+    border-radius: 0.5rem;
+}
+
+/* Toasts */
+.toast-container .toast {
+    min-width: 250px;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.2);
 }

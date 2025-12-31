@@ -1,6 +1,6 @@
-﻿@* Path: Views/Shared/_Layout.cshtml *@
+﻿@* Views/Shared/_Layout.cshtml *@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 
 <head>
     <meta charset="utf-8" />
@@ -8,75 +8,155 @@
     <title>@ViewData["Title"] - AddisBookingAdmin</title>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
-
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="@Url.Action("Index", "Home")">AddisBookingAdmin</a>
+<body class="@(User.IsInRole("Admin") ? "has-sidebar" : "")">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow">
+        <div class="container-fluid">
+            @if (User.IsInRole("Admin"))
+            {
+                <button class="btn btn-outline-light me-2 d-lg-none" id="sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+            }
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-building"></i> AddisBooking
+            </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Index", "Home")">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Register", "Auth")">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Login", "Auth")">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Apply", "Provider")">Apply as Provider</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Index", "Service")">My Services</a>
-                    </li>
-                    @if (User.IsInRole("Admin"))
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @* Only show dashboard for Provider and Customer *@
+                        @if (User.IsInRole("Provider"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Provider" asp-action="Dashboard">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Service" asp-action="Index">My Services</a>
+                            </li>
+                        }
+                        else if (!User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Index">Dashboard</a>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Auth" asp-action="Register">Register</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a></li>
+                    }
+                    @if (User.IsInRole("Customer"))
+                    {
+                        <li class="nav-item"><a class="nav-link" asp-controller="Provider" asp-action="Apply">Apply as Provider</a></li>
+                    }
+                   
+                </ul>
+
+                <ul class="navbar-nav align-items-center">
+                    @if (User.Identity!.IsAuthenticated)
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Admin" asp-action="Users">Users</a>
+                            <span class="navbar-text me-2">@User.Identity.Name</span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Admin" asp-action="Providers">Providers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Admin" asp-action="Applications">PendingApplications</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Admin" asp-action="Services">Services</a>
+                            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-outline-danger">Logout</button>
+                            </form>
                         </li>
                     }
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <span class="navbar-text text-light">Hello, @User.Identity?.Name</span>
+                    <li class="nav-item ms-3">
+                        <button class="btn btn-outline-light" id="darkModeToggle">
+                            <span id="themeIcon">🌙</span>
+                        </button>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container">
-        @RenderBody()
-    </div>
+    @* ADMIN SIDEBAR *@
+    @if (User.IsInRole("Admin"))
+    {
+        <div id="adminSidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link" asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
+                <a class="nav-link" asp-controller="Admin" asp-action="Users">Users</a>
+                <a class="nav-link" asp-controller="Admin" asp-action="Providers">Providers</a>
+                <a class="nav-link" asp-controller="Admin" asp-action="Applications">Applications</a>
+                <a class="nav-link" asp-controller="Admin" asp-action="Services">Services</a>
+            </nav>
+        </div>
+    }
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light text-center py-3 mt-4">
-        &copy; @DateTime.Now.Year AddisBookingAdmin. All rights reserved.
+    <!-- MAIN CONTENT -->
+    <main class="main-content mt-5">
+        <div class="container-fluid">
+            @RenderBody()
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer bg-dark text-light text-center py-3 mt-auto">
+        &copy; @DateTime.Now.Year AddisBooking. All rights reserved.
     </footer>
 
-    <!-- Bootstrap JS (optional) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    @RenderSection("scripts", required: false)
+    <!-- SCRIPTS -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Dark mode toggle with emoji and persistence
+        const toggle = document.getElementById('darkModeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const htmlEl = document.documentElement;
+
+        // Restore theme from localStorage or default to light
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        htmlEl.setAttribute('data-bs-theme', savedTheme);
+
+        function updateThemeIcon() {
+            if (htmlEl.getAttribute('data-bs-theme') === 'dark') {
+                themeIcon.textContent = '☀️';
+            } else {
+                themeIcon.textContent = '🌙';
+            }
+        }
+        updateThemeIcon();
+
+        toggle.addEventListener('click', () => {
+            let newTheme = htmlEl.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+            htmlEl.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon();
+        });
+
+        // Sidebar toggle for mobile
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                document.body.classList.toggle('sidebar-open');
+            });
+        }
+    </script>
+
+    @RenderSection("Scripts", required: false)
 </body>
 
 </html>
