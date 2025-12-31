@@ -16,9 +16,11 @@ builder.Services.AddControllersWithViews();
 
 // DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(
-        "Host=localhost;Port=5432;Database=capstone_db;Username=postgres;Password=1937205"
-    ));
+{
+    var cs = Environment.GetEnvironmentVariable("DATABASE_URL");
+    options.UseNpgsql(cs);
+});
+
 
 // Custom services
 builder.Services.AddScoped<PasswordService>();
@@ -70,6 +72,28 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    try
+    {
+        if (db.Database.CanConnect())
+        {
+            Console.WriteLine("✅ PostgreSQL connection successful");
+        }
+        else
+        {
+            Console.WriteLine("❌ PostgreSQL connection failed");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("❌ DB connection error:");
+        Console.WriteLine(ex.Message);
+    }
+}
 
 // ======================
 // MIDDLEWARE
