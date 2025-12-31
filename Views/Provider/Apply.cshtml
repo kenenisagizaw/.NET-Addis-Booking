@@ -2,40 +2,56 @@
     ViewData["Title"] = "Apply to Become a Provider";
 }
 
-<h2>Apply to Become a Provider</h2>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Apply to Become a Provider</h4>
+                </div>
+                <div class="card-body">
 
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger">@ViewBag.Error</div>
-}
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            @ViewBag.Error
+                        </div>
+                    }
 
-<form asp-action="Apply" method="post" enctype="multipart/form-data">
-    <div class="mb-3">
-        <label class="form-label">Full Name</label>
-        <input name="fullName" class="form-control" required />
+                    <form asp-action="Apply" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input name="fullName" class="form-control" placeholder="Abebe bekele" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <input name="phone" class="form-control" placeholder="+251 9XXXXXXXX" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Business Name</label>
+                            <input name="businessName" class="form-control" placeholder="My Business" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">National ID (PDF / Image)</label>
+                            <input type="file" name="nationalId" class="form-control" accept=".pdf,image/*" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Business License (PDF / Image)</label>
+                            <input type="file" name="businessLicense" class="form-control" accept=".pdf,image/*" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-send-fill me-1"></i> Submit Application
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label class="form-label">Phone</label>
-        <input name="phone" class="form-control" required />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Business Name</label>
-        <input name="businessName" class="form-control" required />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">National ID (PDF / Image)</label>
-        <input type="file" name="nationalId" class="form-control" accept=".pdf,image/*" required />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Business License (PDF / Image)</label>
-        <input type="file" name="businessLicense" class="form-control" accept=".pdf,image/*" required />
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        Submit Application
-    </button>
-</form>
+</div>
