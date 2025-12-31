@@ -25,13 +25,15 @@ namespace AddisBookingAdmin.Data
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Provider)
                 .WithOne(p => p.User)
-                .HasForeignKey<Provider>(p => p.UserId);
+                .HasForeignKey<Provider>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Provider ↔ Services (1–many)
             modelBuilder.Entity<Provider>()
                 .HasMany(p => p.Services)
                 .WithOne(s => s.Provider)
-                .HasForeignKey(s => s.ProviderId);
+                .HasForeignKey(s => s.ProviderId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
