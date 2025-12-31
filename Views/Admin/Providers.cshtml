@@ -4,55 +4,112 @@
     ViewData["Title"] = "Providers";
 }
 
-<h2>Approved Providers</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold">Approved Providers</h2>
+    <span class="text-muted">@Model.Count() provider(s)</span>
+</div>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Full Name</th>
-            <th>Business Name</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Approved</th>
-            <th>Services Count</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (!Model.Any())
-        {
+<div class="table-responsive shadow-sm rounded bg-white">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
             <tr>
-                <td colspan="7" class="text-center text-muted">
-                    No providers found
-                </td>
+                <th>#</th>
+                <th>Full Name</th>
+                <th>Business Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Approved</th>
+                <th>Services</th>
+                <th class="text-center">Actions</th>
             </tr>
-        }
-        else
-        {
-            int index = 1;
-            foreach (var provider in Model)
+        </thead>
+        <tbody>
+            @if (!Model.Any())
             {
                 <tr>
-                    <td>@index</td>
-                    <td>@provider.User.FullName</td>
-                    <td>@provider.BusinessName</td>
-                    <td>@provider.Phone</td>
-                    <td>@provider.User.Email</td>
-                    <td>
-                        @if (provider.IsApproved)
-                        {
-                            <span class="badge bg-success">Approved</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-warning">Pending</span>
-                        }
+                    <td colspan="8" class="text-center text-muted py-4">
+                        No providers found
                     </td>
-                    <td>@(provider.Services?.Count ?? 0)</td>
                 </tr>
-
-                index++;
             }
-        }
-    </tbody>
-</table>
+            else
+            {
+                int index = 1;
+                foreach (var provider in Model)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td>@provider.User.FullName</td>
+                        <td>@provider.BusinessName</td>
+                        <td>@provider.Phone</td>
+                        <td>@provider.User.Email</td>
+                        <td>
+                            @if (provider.IsApproved)
+                            {
+                                <span class="badge bg-success">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            }
+                        </td>
+                        <td>@(provider.Services?.Count ?? 0)</td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteProviderModal-@provider.Id">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- DELETE CONFIRMATION MODAL -->
+                    <div class="modal fade" id="deleteProviderModal-@provider.Id" tabindex="-1" aria-labelledby="deleteProviderLabel-@provider.Id" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-0 shadow-sm">
+                                <div class="modal-header bg-danger text-white">
+                                    <h5 class="modal-title" id="deleteProviderLabel-@provider.Id">
+                                        Delete Provider
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to delete <strong>@provider.BusinessName</strong>?</p>
+                                    <ul class="text-danger mb-0">
+                                        <li>The provider account</li>
+                                        <li>All related services</li>
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form asp-action="DeleteProvider" asp-controller="Admin" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@provider.Id" />
+                                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    index++;
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Toast Notifications -->
+@if (TempData["Success"] != null || TempData["Error"] != null)
+{
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div class="toast show align-items-center text-white
+            @(TempData["Success"] != null ? "bg-success" : "bg-danger") border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @(TempData["Success"] ?? TempData["Error"])
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+}
