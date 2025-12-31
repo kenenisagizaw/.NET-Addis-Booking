@@ -1,27 +1,74 @@
 @model IEnumerable<AddisBookingAdmin.Models.Service>
-@{
-    ViewData["Title"] = "All Services";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
 
-<h2>All Services</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold">All Services</h2>
+    <span class="text-muted">@Model.Count() service(s)</span>
+</div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Service</th>
-            <th>Provider</th>
-            <th>Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var service in Model)
-        {
+<div class="table-responsive shadow-sm rounded bg-white">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
             <tr>
-                <td>@service.Name</td>
-                <td>@service.Provider.FullName</td>
-                <td>@service.Price</td>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Provider</th>
+                <th>Business</th>
+                <th class="text-center">Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        No services found
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var s in Model)
+                {
+                    <tr>
+                        <td>@s.Name</td>
+                        <td>@s.Price.ToString("N2") Birr</td>
+                        <td>@s.Provider?.User?.FullName</td>
+                        <td>@s.Provider?.BusinessName</td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-danger" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteServiceModal-@s.Id">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- DELETE SERVICE MODAL -->
+                    <div class="modal fade" id="deleteServiceModal-@s.Id" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-0 shadow-sm">
+                                <div class="modal-header bg-danger text-white">
+                                    <h5 class="modal-title">Delete Service</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete <strong>@s.Name</strong>?
+                                    <br />
+                                    <small class="text-muted">This action cannot be undone.</small>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form asp-action="DeleteService" asp-controller="Admin" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@s.Id" />
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </tbody>
+    </table>
+</div>
