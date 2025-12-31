@@ -99,10 +99,13 @@ namespace AddisBookingAdmin.Controllers
         }
 
         // GET: /Auth/Logout
-        [HttpGet]
+        // POST: /Auth/Logout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
+            Response.Cookies.Delete("access_token");
             return RedirectToAction("Login");
         }
     }
