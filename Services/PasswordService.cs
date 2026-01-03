@@ -7,6 +7,31 @@ namespace AddisBookingAdmin.Services
 {
     public class PasswordService
     {
+        public bool ValidatePassword(string password, out string error)
+        {
+            error = string.Empty;
+            if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
+            {
+                error = "Password must be at least 6 characters long.";
+                return false;
+            }
+            if (!password.Any(char.IsUpper))
+            {
+                error = "Password must contain at least one uppercase letter.";
+                return false;
+            }
+            if (!password.Any(char.IsDigit))
+            {
+                error = "Password must contain at least one number.";
+                return false;
+            }
+            if (!password.Any(ch => !char.IsLetterOrDigit(ch)))
+            {
+                error = "Password must contain at least one special character.";
+                return false;
+            }
+            return true;
+        }
         public void HashPassword(User user, string password)
         {
             // Generate salt
