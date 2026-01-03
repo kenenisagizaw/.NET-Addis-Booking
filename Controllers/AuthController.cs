@@ -75,6 +75,12 @@ namespace AddisBookingAdmin.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
+            if (!_passwordService.ValidatePassword(model.Password, out var passwordError))
+            {
+                ModelState.AddModelError("Password", passwordError);
+                return View(model);
+            }
+
             if (await _context.Users.AnyAsync(u => u.Email == model.Email))
             {
                 ModelState.AddModelError("", "Email already exists");
