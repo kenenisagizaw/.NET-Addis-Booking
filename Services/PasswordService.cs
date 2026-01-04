@@ -6,7 +6,8 @@ using AddisBookingAdmin.Models;
 namespace AddisBookingAdmin.Services
 {
     public class PasswordService
-    {
+    {         
+         //Password Validation
         public bool ValidatePassword(string password, out string error)
         {
             error = string.Empty;
