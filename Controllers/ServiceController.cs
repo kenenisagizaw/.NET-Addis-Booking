@@ -82,10 +82,8 @@ namespace AddisBookingAdmin.Controllers
             var providerId = await GetProviderIdAsync();
             if (providerId == null) return Forbid();
 
-            // ❗IMPORTANT: Provider is NOT posted from the form
             service.ProviderId = providerId.Value;
 
-            // Remove navigation validation error
             ModelState.Remove("Provider");
 
             if (!ModelState.IsValid)
