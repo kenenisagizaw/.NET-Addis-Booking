@@ -111,7 +111,7 @@ public IActionResult Services()
     public IActionResult Users()
     {
         var users = _context.Users
-            .Include(u => u.Provider) // ✅ FIXED
+            .Include(u => u.Provider) // 
             .ToList();
 
         return View(users);
