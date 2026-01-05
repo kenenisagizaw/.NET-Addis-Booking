@@ -1,0 +1,37 @@
+@model IEnumerable<AddisBookingAdmin.Models.Provider>
+
+@{
+    ViewData["Title"] = "Providers List";
+}
+
+<h2>Providers List</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Full Name</th>
+            <th>Business Name</th>
+            <th>Phone</th>
+            <th>Is Approved</th>
+            <th>Applied At</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var provider in Model)
+    {
+        <tr>
+            <td>@provider.Id</td>
+            <td>@provider.FullName</td>
+            <td>@provider.BusinessName</td>
+            <td>@provider.Phone</td>
+            <td>@provider.IsApproved</td>
+            <td>@provider.AppliedAt.ToString("yyyy-MM-dd HH:mm")</td>
+            <td>
+                <a class="btn btn-primary btn-sm" href="@Url.Action("ProviderServices", "Users", new { providerId = provider.Id })">Services</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
