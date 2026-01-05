@@ -19,12 +19,9 @@
     @foreach (var provider in Model)
     {
         <tr>
-            <td>@provider.Id</td>
             <td>@provider.FullName</td>
             <td>@provider.BusinessName</td>
             <td>@provider.Phone</td>
-            <td>@provider.IsApproved</td>
-            <td>@provider.AppliedAt.ToString("yyyy-MM-dd HH:mm")</td>
             <td>
                 <a class="btn btn-primary btn-sm" href="@Url.Action("ProviderServices", "Users", new { providerId = provider.Id })">Services</a>
             </td>
