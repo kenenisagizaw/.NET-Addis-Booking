@@ -9,27 +9,30 @@
 <table class="table table-striped">
     <thead>
         <tr>
+            <th>#</th>
             <th>Business Name</th>
             <th>Full Name</th>
             <th>Phone</th>
             <th>Is Approved</th>
-            <th>Applied At</th>
-            <th></th>
+            <th>Services</th>
         </tr>
     </thead>
     <tbody>
+    @{ var i = 1; }
     @foreach (var provider in Model)
     {
         <tr>
+            <td>@i</td>
             <td>@provider.BusinessName</td>
             <td>@provider.FullName</td>
             <td>@provider.Phone</td>
             <td>@provider.IsApproved</td>
-            <td>@provider.AppliedAt.ToString("yyyy-MM-dd HH:mm")</td>
+            <!-- Removed Applied At cell -->
             <td>
                 <a class="btn btn-primary btn-sm" href="@Url.Action("ProviderServices", "Users", new { providerId = provider.Id })">Services</a>
             </td>
         </tr>
+        i++;
     }
     </tbody>
 </table>
