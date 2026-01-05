@@ -9,19 +9,23 @@
 <table class="table table-bordered">
     <thead>
         <tr>
+            <th>#</th>
+            <th>Price</th>
             <th>Name</th>
             <th>Description</th>
-            <th>Price</th>
         </tr>
     </thead>
     <tbody>
+    @{ var i = 1; }
     @foreach (var service in Model)
     {
         <tr>
+            <td>@i</td>
+            <td>@service.Price</td>
             <td>@service.Name</td>
             <td>@service.Description</td>
-            <td>@service.Price</td>
         </tr>
+        i++;
     }
     </tbody>
 </table>
