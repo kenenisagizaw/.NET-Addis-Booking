@@ -1,24 +1,28 @@
 @model IEnumerable<AddisBookingAdmin.Models.Service>
 @{
-    ViewData["Title"] = "Provider Services";
+    ViewData["Title"] = "Available Services";
     var providerName = ViewBag.ProviderName as string;
 }
 
-<h2 class="mb-4">Services for @providerName</h2>
+<h3 class="mb-4">Services by @providerName</h3>
 
 <div class="row">
 @foreach (var service in Model)
 {
-    <div class="col-md-4 mb-3">
-        <div class="card h-100 shadow-sm">
+    <div class="col-md-4 col-sm-6 mb-4">
+        <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
+                
                 <h5 class="card-title">@service.Name</h5>
-                <h6 class="card-subtitle mb-2 text-muted">
-                     @service.Price
-                </h6>
-                <p class="card-text">
+
+                <span class="badge bg-success mb-2">
+                    @service.Price.ToString("N0") ETB
+                </span>
+
+                <p class="card-text text-muted mt-2">
                     @service.Description
                 </p>
+
             </div>
         </div>
     </div>
