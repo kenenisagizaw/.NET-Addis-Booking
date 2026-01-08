@@ -6,7 +6,8 @@ using AddisBookingAdmin.Models;
 namespace AddisBookingAdmin.Services
 {
     public class PasswordService
-    {
+    {         
+        // Checks password strength and requirements
         public bool ValidatePassword(string password, out string error)
         {
             error = string.Empty;
@@ -32,9 +33,11 @@ namespace AddisBookingAdmin.Services
             }
             return true;
         }
+
+        // Hashes password and stores salt
         public void HashPassword(User user, string password)
         {
-            byte[] salt = new byte[128 / 8];
+            byte[] salt = new byte[128 / 8]; // Generate salt
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(salt);
@@ -52,6 +55,7 @@ namespace AddisBookingAdmin.Services
             user.PasswordSalt = Convert.ToBase64String(salt);
         }
 
+        // Verifies password against stored hash
         public bool VerifyPassword(User user, string password)
         {
             var salt = Convert.FromBase64String(user.PasswordSalt);
