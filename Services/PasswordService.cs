@@ -9,7 +9,7 @@ namespace AddisBookingAdmin.Services
     /// Provides password validation, hashing, and verification services.
     /// </summary>
     public class PasswordService
-    {         
+    {
         /// <summary>
         /// Validates the password against security requirements.
         /// </summary>
