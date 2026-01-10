@@ -7,7 +7,7 @@ namespace AddisBookingAdmin.Services
 {
     public class PasswordService
     {
-      
+        // Checks password strength and requirements
         public bool ValidatePassword(string password, out string error)
         {
             error = string.Empty;
