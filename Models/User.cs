@@ -21,7 +21,7 @@ namespace AddisBookingAdmin.Models
         // Navigation property for one-to-one relationship with Provider
         public Provider? Provider { get; set; }
     }
-
+//UserRole
     public enum UserRole
     {
         Customer,
