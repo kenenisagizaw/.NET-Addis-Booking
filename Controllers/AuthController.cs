@@ -104,7 +104,6 @@ namespace AddisBookingAdmin.Controllers
             return RedirectToAction("Login");
         }
 
-        // GET: /Auth/Logout
         // POST: /Auth/Logout
         [HttpPost]
         [ValidateAntiForgeryToken]
