@@ -9,7 +9,6 @@ using AddisBookingAdmin.Models;
 // =========================
 namespace AddisBookingAdmin.Controllers;
 
-// Controller for home and informational pages.
 public class HomeController : Controller
 {
     // Displays the home page.
