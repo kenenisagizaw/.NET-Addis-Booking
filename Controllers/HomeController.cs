@@ -18,7 +18,6 @@ public class HomeController : Controller
         return View();
     }
 
-    // Displays the privacy policy page.
     public IActionResult Privacy()
     {
         return View();
