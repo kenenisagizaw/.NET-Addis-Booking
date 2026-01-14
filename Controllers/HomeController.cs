@@ -11,7 +11,6 @@ namespace AddisBookingAdmin.Controllers;
 
 public class HomeController : Controller
 {
-    // Displays the home page.
     public IActionResult Index()
     {
         return View();
