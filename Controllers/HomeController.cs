@@ -5,7 +5,6 @@ using AddisBookingAdmin.Models;
 
 // =========================
 // HOME CONTROLLER
-// Handles main site navigation and error pages
 // =========================
 namespace AddisBookingAdmin.Controllers;
 
