@@ -4,47 +4,95 @@
     ViewData["Title"] = "Edit Service";
 }
 
-<div class="container mt-4">
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-warning text-dark">
-            <h4 class="mb-0">@ViewData["Title"]</h4>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<div class="container py-5">
+
+    <!-- Title + Back -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">@ViewData["Title"]</h2>
+            <p class="text-body-secondary mb-0">Update service information and save changes</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-3">
+            <i class="bi bi-arrow-left me-1"></i> Back
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 bg-body overflow-hidden">
+
+        <!-- Header -->
+        <div class="card-header bg-warning-subtle text-warning-emphasis py-4 border-0">
+            <div class="d-flex align-items-center">
+                <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center"
+                     style="width: 50px; height: 50px;">
+                    <i class="bi bi-pencil-square fs-4"></i>
+                </div>
+                <div class="ms-3">
+                    <h4 class="mb-0 fw-semibold">Edit: @Model.Name</h4>
+                    <small class="text-body-secondary">Make changes then click save</small>
+                </div>
+            </div>
         </div>
 
-        <div class="card-body">
+        <!-- Body -->
+        <div class="card-body p-4">
             <form asp-action="Edit" method="post">
                 <input type="hidden" asp-for="Id" />
 
+                <!-- Name -->
                 <div class="mb-3">
                     <label asp-for="Name" class="form-label fw-semibold"></label>
-                    <input asp-for="Name" class="form-control" />
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-body">
+                            <i class="bi bi-card-text"></i>
+                        </span>
+                        <input asp-for="Name"
+                               class="form-control rounded-end-3 bg-body text-body"
+                               placeholder="Service name" />
+                    </div>
                     <span asp-validation-for="Name" class="text-danger small"></span>
                 </div>
 
+                <!-- Price -->
                 <div class="mb-3">
                     <label asp-for="Price" class="form-label fw-semibold"></label>
-                    <div class="input-group">
-                        <span class="input-group-text">Birr</span>
-                        <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-body fw-semibold">Birr</span>
+                        <input asp-for="Price"
+                               class="form-control rounded-end-3 bg-body text-body"
+                               type="number"
+                               step="0.01"
+                               placeholder="0.00" />
                     </div>
                     <span asp-validation-for="Price" class="text-danger small"></span>
                 </div>
 
+                <!-- Description -->
                 <div class="mb-3">
                     <label asp-for="Description" class="form-label fw-semibold"></label>
-                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <textarea asp-for="Description"
+                              class="form-control form-control-lg rounded-3 bg-body text-body"
+                              rows="5"
+                              placeholder="Write a short description..."></textarea>
                     <span asp-validation-for="Description" class="text-danger small"></span>
                 </div>
 
-                <div class="d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        Cancel
+                <hr class="my-4" />
+
+                <!-- Actions -->
+                <div class="d-flex justify-content-between gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg rounded-3">
+                        <i class="bi bi-x-circle me-1"></i> Cancel
                     </a>
-                    <button type="submit" class="btn btn-success">
-                        Save Changes
+
+                    <button type="submit" class="btn btn-success btn-lg rounded-3 fw-semibold">
+                        <i class="bi bi-check2-circle me-1"></i> Save Changes
                     </button>
                 </div>
             </form>
         </div>
+
     </div>
 </div>
 
