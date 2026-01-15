@@ -17,7 +17,7 @@ namespace AddisBookingAdmin.Controllers
             _context = context;
         }
 
-        // 🔑 Helper: Get ProviderId from logged-in User
+        // Helper: Get ProviderId from logged-in User
         private async Task<int?> GetProviderIdAsync()
         {
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
