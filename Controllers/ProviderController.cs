@@ -67,7 +67,8 @@ public class ProviderController : Controller
         _context.ProviderApplications.Add(application);
         await _context.SaveChangesAsync();
 
-        return RedirectToAction("Index", "Home");
+        TempData["ApplicationSuccess"] = "Application submitted, please wait for Admin Approval.";
+        return RedirectToAction("Apply");
     }
 
     // =========================
