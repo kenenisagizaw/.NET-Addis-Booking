@@ -8,6 +8,21 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="fw-bold">Users</h2>
     <span class="text-muted">@Model.Count() user(s)</span>
+    <!-- Toast Notifications -->
+    @if (TempData["Success"] != null || TempData["Error"] != null)
+    {
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div class="toast show align-items-center text-white
+                @(TempData["Success"] != null ? "bg-success" : "bg-danger") border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        @(TempData["Success"] ?? TempData["Error"])
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 <div class="table-responsive shadow-sm rounded bg-white">
