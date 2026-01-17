@@ -9,6 +9,12 @@
 <div class="container d-flex justify-content-center align-items-center min-vh-100 py-5">
 
     <div class="card shadow-lg border-0 rounded-4 overflow-hidden bg-body" style="max-width: 420px; width: 100%;">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success text-center mb-3">
+                @TempData["SuccessMessage"]
+            </div>
+        }
 
         <!-- Header -->
         <div class="card-header text-center py-4 bg-primary text-white">
