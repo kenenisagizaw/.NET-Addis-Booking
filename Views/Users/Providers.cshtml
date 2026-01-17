@@ -45,14 +45,15 @@
                     <i class="bi bi-list-columns"></i> All Providers
                 </h5>
                 <div class="d-flex">
-                    <input type="text" class="form-control form-control-sm me-2" placeholder="Search providers..." id="searchInput">
+                    <input type="text" class="form-control form-control-sm me-2" placeholder="Search providers..."
+                        id="searchInput">
                     <button class="btn btn-light btn-sm">
                         <i class="bi bi-filter"></i> Filter
                     </button>
                 </div>
             </div>
         </div>
-        
+
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover" id="providersTable">
@@ -72,59 +73,61 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @{ var i = 1; }
-                    @foreach (var provider in Model)
-                    {
-                        <tr>
-                            <td class="text-center fw-bold">@i</td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3">
-                                        <i class="bi bi-shop"></i>
-                                    </div>
-                                    <div>
-                                        <strong>@provider.BusinessName</strong>
-                                        <div class="text-muted small">
-                                            <i class="bi bi-geo-alt"></i> 
-                                            @(provider.Address ?? "Address not specified")
+                        @{
+                            var i = 1;
+                        }
+                        @foreach (var provider in Model)
+                        {
+                            <tr>
+                                <td class="text-center fw-bold">@i</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3">
+                                            <i class="bi bi-shop"></i>
+                                        </div>
+                                        <div>
+                                            <strong>@provider.BusinessName</strong>
+                                            <div class="text-muted small">
+                                                <i class="bi bi-geo-alt"></i>
+                                                @(provider.Address ?? "Address not specified")
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-telephone text-success me-2"></i>
-                                    <a href="tel:@provider.Phone" class="text-decoration-none">
-                                        @provider.Phone
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-telephone text-success me-2"></i>
+                                        <a href="tel:@provider.Phone" class="text-decoration-none">
+                                            @provider.Phone
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-primary btn-sm"
+                                        href="@Url.Action("ProviderServices", "Users", new { providerId = provider.Id })">
+                                        <i class="bi bi-eye"></i> View Services
                                     </a>
-                                </div>
-                            </td>
-                            <td>
-                                <a class="btn btn-outline-primary btn-sm" 
-                                   href="@Url.Action("ProviderServices", "Users", new { providerId = provider.Id })">
-                                    <i class="bi bi-eye"></i> View Services
-                                </a>
-                            </td>
-                            <td class="text-center">
-                                <div class="btn-group" role="group">
-                                    <a href="#" class="btn btn-outline-info btn-sm" title="Edit">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-outline-success btn-sm" title="View Details">
-                                        <i class="bi bi-info-circle"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-outline-danger btn-sm" title="Delete">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        i++;
-                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a href="#" class="btn btn-outline-info btn-sm" title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-outline-success btn-sm" title="View Details">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-outline-danger btn-sm" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            i++;
+                        }
                     </tbody>
                 </table>
             </div>
-            
+
             <!-- Empty State -->
             @if (!Model.Any())
             {
@@ -140,7 +143,7 @@
                 </div>
             }
         </div>
-        
+
         <!-- Footer -->
         <div class="card-footer bg-light">
             <div class="d-flex justify-content-between align-items-center">
@@ -170,14 +173,14 @@
 
 <!-- Optional JavaScript for search functionality -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('searchInput');
         const table = document.getElementById('providersTable');
         const rows = table.querySelectorAll('tbody tr');
-        
-        searchInput.addEventListener('keyup', function() {
+
+        searchInput.addEventListener('keyup', function () {
             const filter = searchInput.value.toLowerCase();
-            
+
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
                 row.style.display = text.includes(filter) ? '' : 'none';
@@ -190,36 +193,36 @@
     .card {
         border-radius: 10px;
     }
-    
+
     .table th {
         border-top: none;
         font-weight: 600;
         color: #495057;
     }
-    
+
     .table td {
         vertical-align: middle;
     }
-    
+
     .btn-group .btn {
         border-radius: 5px;
         margin: 0 2px;
     }
-    
+
     .table-hover tbody tr:hover {
         background-color: rgba(13, 110, 253, 0.05);
         transform: translateY(-1px);
         transition: all 0.2s ease;
     }
-    
+
     .card-header {
         border-radius: 10px 10px 0 0 !important;
     }
-    
+
     .card-footer {
         border-radius: 0 0 10px 10px;
     }
-    
+
     .bg-opacity-10 {
         background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
     }
