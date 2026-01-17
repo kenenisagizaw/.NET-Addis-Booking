@@ -14,22 +14,22 @@ namespace AddisBookingAdmin.Controllers
             _context = context;
         }
 
-            // GET: /Users/ProviderServices/{providerId}
-            public IActionResult ProviderServices(int providerId)
-            {
-                var provider = _context.Providers.FirstOrDefault(p => p.Id == providerId);
-                if (provider == null) return NotFound();
-                var services = _context.Services.Where(s => s.ProviderId == providerId).ToList();
-                ViewBag.ProviderName = provider.FullName;
-                return View(services);
-            }
+        // GET: /Users/ProviderServices/{providerId}
+        public IActionResult ProviderServices(int providerId)
+        {
+            var provider = _context.Providers.FirstOrDefault(p => p.Id == providerId);
+            if (provider == null) return NotFound();
+            var services = _context.Services.Where(s => s.ProviderId == providerId).ToList();
+            ViewBag.ProviderName = provider.FullName;
+            return View(services);
+        }
 
-            // GET: /Users/Providers
-            public IActionResult Providers()
-            {
-                var providers = _context.Providers.ToList();
-                return View(providers);
-            }
+        // GET: /Users/Providers
+        public IActionResult Providers()
+        {
+            var providers = _context.Providers.ToList();
+            return View(providers);
+        }
 
         // GET: /Users
         public IActionResult Index()
