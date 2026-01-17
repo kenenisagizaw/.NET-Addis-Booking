@@ -111,7 +111,8 @@ public IActionResult Services()
     public IActionResult Users()
     {
         var users = _context.Users
-            .Include(u => u.Provider) // 
+            .Include(u => u.Provider)
+            .Where(u => u.Role != UserRole.Admin)
             .ToList();
 
         return View(users);

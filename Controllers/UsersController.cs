@@ -57,46 +57,6 @@ namespace AddisBookingAdmin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Users/Edit/5
-        public IActionResult Edit(int id)
-        {
-            var user = _context.Users.Find(id);
-            if (user == null) return NotFound();
-            return View(user);
-        }
 
-        // POST: /Users/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(User user)
-        {
-            if (!ModelState.IsValid)
-                return View(user);
-
-            _context.Users.Update(user);
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
-        }
-
-        // GET: /Users/Delete/5
-        public IActionResult Delete(int id)
-        {
-            var user = _context.Users.Find(id);
-            if (user == null) return NotFound();
-            return View(user);
-        }
-
-        // POST: /Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            var user = _context.Users.Find(id);
-            if (user == null) return NotFound();
-
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
-        }
     }
 }
