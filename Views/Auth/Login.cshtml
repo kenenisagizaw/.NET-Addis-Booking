@@ -29,9 +29,8 @@
                 <!-- Email -->
                 <div class="mb-3">
                     <label asp-for="Email" class="form-label fw-semibold"></label>
-                    <input asp-for="Email"
-                           class="form-control form-control-lg rounded-3 bg-body text-body"
-                           placeholder="Enter your email" />
+                    <input asp-for="Email" class="form-control form-control-lg rounded-3 bg-body text-body"
+                        placeholder="Enter your email" />
                     <span asp-validation-for="Email" class="text-danger small"></span>
                 </div>
 
@@ -40,16 +39,11 @@
                     <label asp-for="Password" class="form-label fw-semibold"></label>
 
                     <div class="input-group input-group-lg">
-                        <input asp-for="Password"
-                               id="passwordInput"
-                               type="password"
-                               class="form-control rounded-start-3 bg-body text-body"
-                               placeholder="Enter your password" />
+                        <input asp-for="Password" id="passwordInput" type="password"
+                            class="form-control rounded-start-3 bg-body text-body" placeholder="Enter your password" />
 
-                        <button class="btn btn-outline-secondary rounded-end-3"
-                                type="button"
-                                id="togglePasswordBtn"
-                                aria-label="Show password">
+                        <button class="btn btn-outline-secondary rounded-end-3" type="button" id="togglePasswordBtn"
+                            aria-label="Show password">
                             <i class="bi bi-eye" id="togglePasswordIcon"></i>
                         </button>
                     </div>
@@ -68,7 +62,8 @@
                 <div class="text-center mt-3">
                     <small class="text-muted">
                         Don’t have an account?
-                        <a asp-action="Register" asp-controller="Auth" class="text-primary fw-semibold text-decoration-none">
+                        <a asp-action="Register" asp-controller="Auth"
+                            class="text-primary fw-semibold text-decoration-none">
                             Register
                         </a>
                     </small>
