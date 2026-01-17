@@ -34,7 +34,7 @@ namespace AddisBookingAdmin.Controllers
         // GET: /Users
         public IActionResult Index()
         {
-            var users = _context.Users.ToList();
+            var users = _context.Users.Where(u => u.Role != UserRole.Admin).ToList();
             return View(users);
         }
 
