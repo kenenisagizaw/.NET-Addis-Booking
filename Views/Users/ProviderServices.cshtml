@@ -4,27 +4,110 @@
     var providerName = ViewBag.ProviderName as string;
 }
 
-<h3 class="mb-4">Services by @providerName</h3>
+<style>
+    .services-container {
+        padding: 2rem 0;
+    }
+    
+    .page-title {
+        color: #2c3e50;
+        font-weight: 600;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f8f9fa;
+        margin-bottom: 2rem;
+    }
+    
+    .service-card {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        height: 100%;
+        border: 1px solid #e9ecef;
+    }
+    
+    .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        border-color: #3498db;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .service-title {
+        color: #2c3e50;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.4;
+    }
+    
+    .price-badge {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        align-self: flex-start;
+        margin-bottom: 1rem;
+    }
+    
+    .service-description {
+        color: #6c757d;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        flex-grow: 1;
+    }
+    
+    .row {
+        --bs-gutter-x: 1.5rem;
+        --bs-gutter-y: 1.5rem;
+    }
+    
+    .no-services {
+        text-align: center;
+        padding: 3rem;
+        color: #7f8c8d;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+</style>
 
-<div class="row">
-@foreach (var service in Model)
-{
-    <div class="col-md-4 col-sm-6 mb-4">
-        <div class="card h-100 shadow-sm border-0">
-            <div class="card-body">
-                
-                <h5 class="card-title">@service.Name</h5>
+<div class="services-container">
+    <h3 class="page-title mb-4">Services by @providerName</h3>
 
-                <span class="badge bg-success mb-2">
-                    @service.Price.ToString("N0") ETB
-                </span>
-
-                <p class="card-text text-muted mt-2">
-                    @service.Description
-                </p>
-
-            </div>
+    @if (!Model.Any())
+    {
+        <div class="no-services">
+            <p class="fs-5">No services available at the moment.</p>
         </div>
-    </div>
-}
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var service in Model)
+            {
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="service-card h-100">
+                        <div class="card-body">
+                            <h5 class="service-title">@service.Name</h5>
+                            
+                            <span class="price-badge">
+                                @service.Price.ToString("N0") ETB
+                            </span>
+                            
+                            <p class="service-description mt-2">
+                                @service.Description
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>
