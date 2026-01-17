@@ -2,74 +2,53 @@
 
 @{
     ViewData["Title"] = "Providers";
-    var index = 1;
 }
 
 <div class="container mt-4">
 
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- Page Title -->
+    <div class="mb-4">
         <h3 class="fw-bold">Service Providers</h3>
-        <span class="text-muted">@Model.Count() providers</span>
+        <p class="text-muted">Choose a provider to view available services</p>
     </div>
 
-    <!-- Card Wrapper -->
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="text-center">#</th>
-                            <th>Business Name</th>
-                            <th>Phone</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @if (!Model.Any())
-                        {
-                            <tr>
-                                <td colspan="4" class="text-center text-muted py-4">
-                                    No providers found.
-                                </td>
-                            </tr>
-                        }
-                        else
-                        {
-                            @foreach (var provider in Model)
-                            {
-                                <tr>
-                                    <td class="text-center fw-semibold">@index</td>
-
-                                    <td>
-                                        <div class="fw-semibold">@provider.BusinessName</div>
-                                    </td>
-
-                                    <td>
-                                        <span class="badge bg-light text-dark">
-                                            @provider.Phone
-                                        </span>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <a class="btn btn-outline-primary btn-sm"
-                                           href="@Url.Action("ProviderServices", "Users", new { providerId = provider.Id })">
-                                            View Services
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                index++;
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            No providers available at the moment.
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var provider in Model)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+
+                        <!-- Card Body -->
+                        <div class="card-body d-flex flex-column">
+
+                            <h5 class="card-title fw-semibold">
+                                @provider.BusinessName
+                            </h5>
+
+                            <p class="card-text text-muted mb-2">
+                                📞 @provider.Phone
+                            </p>
+
+                            <div class="mt-auto">
+                                <a href="@Url.Action("ProviderServices", "Users", new { providerId = provider.Id })"
+                                   class="btn btn-primary w-100">
+                                    View Services
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 
 </div>
