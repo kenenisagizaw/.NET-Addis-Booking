@@ -23,17 +23,21 @@
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             --radius: 12px;
         }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+
+        @@media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #10b981;
+                --primary-dark: #34d399;
+                --secondary: #3b82f6;
+                --accent: #f59e0b;
+                --light: #18181b;
+                --dark: #f8fafc;
+                --gray: #cbd5e1;
+                --light-gray: #27272a;
+                --gradient: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary) 100%);
+                --shadow: 0 10px 15px -3px rgba(0,0,0,0.5), 0 4px 6px -2px rgba(0,0,0,0.3);
+            }
         }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--dark);
-            background-color: var(--light);
             line-height: 1.6;
             overflow-x: hidden;
         }
@@ -44,10 +48,6 @@
         }
         
         .hero {
-            background: var(--gradient);
-            color: white;
-            padding: 6rem 0 5rem;
-            position: relative;
             overflow: hidden;
         }
         
@@ -76,29 +76,6 @@
             background: rgba(255, 255, 255, 0.1);
             padding: 1.5rem;
             border-radius: var(--radius);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .btn-primary-custom, .btn-secondary-custom {
-            padding: 0.9rem 2rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .btn-primary-custom {
             background-color: white;
             color: var(--primary-dark);
             border: none;
@@ -801,18 +778,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+
         // Animate stats counter
         function animateCounter() {
             const counters = document.querySelectorAll('.stat-number');
             const speed = 200; // The lower the slower
-            
             counters.forEach(counter => {
                 const updateCount = () => {
                     const target = +counter.getAttribute('data-count');
                     const count = +counter.innerText;
-                    
                     const inc = target / speed;
-                    
                     if (count < target) {
                         counter.innerText = Math.ceil(count + inc);
                         setTimeout(updateCount, 1);
@@ -820,11 +795,9 @@
                         counter.innerText = target;
                     }
                 };
-                
                 updateCount();
             });
         }
-        
         // Trigger counter animation when stats section is in viewport
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -834,31 +807,24 @@
                 }
             });
         }, { threshold: 0.5 });
-        
         observer.observe(document.querySelector('.stats'));
-        
         // Add hover effects to feature cards
         document.addEventListener('DOMContentLoaded', function() {
             const featureCards = document.querySelectorAll('.feature-card');
-            
             featureCards.forEach(card => {
                 card.addEventListener('mouseenter', function() {
                     this.style.transform = 'translateY(-10px)';
                 });
-                
                 card.addEventListener('mouseleave', function() {
                     this.style.transform = 'translateY(0)';
                 });
             });
-            
             // Add hover effects to category badges
             const categoryBadges = document.querySelectorAll('.category-badge');
-            
             categoryBadges.forEach(badge => {
                 badge.addEventListener('mouseenter', function() {
                     this.style.transform = 'translateY(-2px)';
                 });
-                
                 badge.addEventListener('mouseleave', function() {
                     this.style.transform = 'translateY(0)';
                 });
