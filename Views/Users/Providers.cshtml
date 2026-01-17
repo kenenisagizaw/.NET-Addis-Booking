@@ -7,42 +7,71 @@
 <div class="container mt-4">
 
     <!-- Page Title -->
-    <div class="mb-4">
-        <h3 class="fw-bold">Service Providers</h3>
-        <p class="text-muted">Choose a provider to view available services</p>
+    <div style="margin-bottom: 24px;">
+        <h3 style="font-weight: 700; margin-bottom: 4px;">Service Providers</h3>
+        <p style="color: #6c757d;">Choose a provider to view available services</p>
     </div>
 
     @if (!Model.Any())
     {
-        <div class="alert alert-info text-center">
+        <div style="
+            padding: 16px;
+            background-color: #e7f3ff;
+            border-radius: 6px;
+            text-align: center;
+            color: #084298;">
             No providers available at the moment.
         </div>
     }
     else
     {
-        <div class="row g-4">
+        <div class="row" style="row-gap: 24px;">
             @foreach (var provider in Model)
             {
                 <div class="col-lg-4 col-md-6">
-                    <div class="card h-100 shadow-sm border-0">
+                    <div style="
+                        height: 100%;
+                        border-radius: 12px;
+                        overflow: hidden;
+                        background-color: #ffffff;
+                        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+                        transition: transform 0.2s ease, box-shadow 0.2s ease;"
+                         onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 30px rgba(0,0,0,0.12)'"
+                         onmouseout="this.style.transform='none'; this.style.boxShadow='0 6px 18px rgba(0,0,0,0.08)'">
+
+                        <!-- Image -->
+                        <img src="https://via.placeholder.com/400x220?text=Provider+Image"
+                             alt="Provider image"
+                             style="
+                                width: 100%;
+                                height: 220px;
+                                object-fit: cover;
+                                display: block;">
 
                         <!-- Card Body -->
-                        <div class="card-body d-flex flex-column">
+                        <div style="padding: 16px; display: flex; flex-direction: column; height: calc(100% - 220px);">
 
-                            <h5 class="card-title fw-semibold">
+                            <h5 style="font-weight: 600; margin-bottom: 8px;">
                                 @provider.BusinessName
                             </h5>
 
-                            <p class="card-text text-muted mb-2">
+                            <p style="color: #6c757d; margin-bottom: 16px;">
                                 📞 @provider.Phone
                             </p>
 
-                            <div class="mt-auto">
-                                <a href="@Url.Action("ProviderServices", "Users", new { providerId = provider.Id })"
-                                   class="btn btn-primary w-100">
-                                    View Services
-                                </a>
-                            </div>
+                            <a href="@Url.Action("ProviderServices", "Users", new { providerId = provider.Id })"
+                               style="
+                                    margin-top: auto;
+                                    display: inline-block;
+                                    text-align: center;
+                                    padding: 10px;
+                                    background-color: #0d6efd;
+                                    color: #ffffff;
+                                    border-radius: 6px;
+                                    text-decoration: none;
+                                    font-weight: 500;">
+                                View Services
+                            </a>
 
                         </div>
                     </div>
