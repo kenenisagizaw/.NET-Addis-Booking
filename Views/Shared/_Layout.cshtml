@@ -59,14 +59,17 @@
                     else
                     {
                         <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Auth" asp-action="Register">Register</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Auth" asp-action="Register">Register</a>
+                        </li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a></li>
                     }
 
                     @if (User.IsInRole("Customer"))
                     {
-                        <li class="nav-item"><a class="nav-link" asp-controller="Provider" asp-action="Apply">Become a Provider</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Users" asp-action="Providers">Providers</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Provider" asp-action="Apply">Become a
+                                Provider</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Users" asp-action="Providers">Providers</a>
+                        </li>
                     }
                 </ul>
 
@@ -156,4 +159,5 @@
 
     @RenderSection("Scripts", required: false)
 </body>
+
 </html>

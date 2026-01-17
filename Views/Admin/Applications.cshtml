@@ -8,7 +8,7 @@
     {
         <div class="toast-container position-fixed top-0 end-0 p-3">
             <div class="toast show align-items-center text-white
-                @(TempData["Success"] != null ? "bg-success" : "bg-danger") border-0" role="alert">
+                    @(TempData["Success"] != null ? "bg-success" : "bg-danger") border-0" role="alert">
                 <div class="d-flex">
                     <div class="toast-body">
                         @(TempData["Success"] ?? TempData["Error"])
@@ -49,9 +49,8 @@
                         <td>@app.BusinessName</td>
                         <td>@app.Phone</td>
                         <td>
-                            <button class="btn btn-sm btn-outline-primary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#documentsModal-@app.Id">
+                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                data-bs-target="#documentsModal-@app.Id">
                                 <i class="bi bi-folder2-open"></i> View Documents
                             </button>
                         </td>
@@ -67,15 +66,14 @@
 
                     <!-- DOCUMENTS MODAL -->
                     <div class="modal fade" id="documentsModal-@app.Id" tabindex="-1"
-                         aria-labelledby="documentsModalLabel-@app.Id" aria-hidden="true">
+                        aria-labelledby="documentsModalLabel-@app.Id" aria-hidden="true">
                         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
                                 <div class="modal-header bg-primary text-white">
                                     <h5 class="modal-title" id="documentsModalLabel-@app.Id">
                                         Documents – @app.FullName
                                     </h5>
-                                    <button type="button" class="btn-close btn-close-white"
-                                            data-bs-dismiss="modal"></button>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                 </div>
 
                                 <div class="modal-body">
@@ -84,17 +82,15 @@
                                         <!-- National ID -->
                                         <div class="col-md-6">
                                             <h6 class="fw-bold mb-2">National ID</h6>
-                                            <iframe src="@app.NationalIdPath"
-                                                    class="w-100 border rounded"
-                                                    style="height: 500px;"></iframe>
+                                            <iframe src="@app.NationalIdPath" class="w-100 border rounded"
+                                                style="height: 500px;"></iframe>
                                         </div>
 
                                         <!-- Business License -->
                                         <div class="col-md-6">
                                             <h6 class="fw-bold mb-2">Business License</h6>
-                                            <iframe src="@app.BusinessLicensePath"
-                                                    class="w-100 border rounded"
-                                                    style="height: 500px;"></iframe>
+                                            <iframe src="@app.BusinessLicensePath" class="w-100 border rounded"
+                                                style="height: 500px;"></iframe>
                                         </div>
 
                                     </div>

@@ -13,7 +13,7 @@
     {
         <div class="toast-container position-fixed top-0 end-0 p-3">
             <div class="toast show align-items-center text-white
-                @(TempData["Success"] != null ? "bg-success" : "bg-danger") border-0" role="alert">
+                    @(TempData["Success"] != null ? "bg-success" : "bg-danger") border-0" role="alert">
                 <div class="d-flex">
                     <div class="toast-body">
                         @(TempData["Success"] ?? TempData["Error"])
@@ -51,17 +51,16 @@
                         <td>@u.Email</td>
                         <td>
                             <span class="badge @(
-                                u.Role == UserRole.Admin ? "bg-primary" :
-                                u.Role == UserRole.Provider ? "bg-warning text-dark" :
-                                "bg-success"
-                            )">
+                                  u.Role == UserRole.Admin ? "bg-primary" :
+                                  u.Role == UserRole.Provider ? "bg-warning text-dark" :
+                                  "bg-success"
+                                                      )">
                                 @u.Role
                             </span>
                         </td>
                         <td class="text-center">
-                            <button class="btn btn-sm btn-outline-danger" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#deleteUserModal-@u.Id">
+                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteUserModal-@u.Id">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </td>
