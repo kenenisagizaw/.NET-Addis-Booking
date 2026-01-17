@@ -92,18 +92,18 @@ public class AdminController : Controller
         return View(providers);
     }
 
-// =========================
-// SERVICES MANAGEMENT (ADMIN)
-// =========================
-public IActionResult Services()
-{
-    var services = _context.Services
-        .Include(s => s.Provider)
-        .ThenInclude(p => p.User)
-        .ToList();
+    // =========================
+    // SERVICES MANAGEMENT (ADMIN)
+    // =========================
+    public IActionResult Services()
+    {
+        var services = _context.Services
+            .Include(s => s.Provider)
+            .ThenInclude(p => p.User)
+            .ToList();
 
-    return View(services);
-}
+        return View(services);
+    }
 
     // =========================
     // USERS MANAGEMENT
