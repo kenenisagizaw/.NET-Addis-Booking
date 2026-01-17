@@ -101,8 +101,8 @@ namespace AddisBookingAdmin.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-                TempData["SuccessMessage"] = "Registered successfully. Please login.";
-                return RedirectToAction("Login");
+            TempData["SuccessMessage"] = "Registered successfully. Please login.";
+            return RedirectToAction("Login");
         }
 
         // POST: /Auth/Logout
