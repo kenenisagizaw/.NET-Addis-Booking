@@ -14,7 +14,7 @@ namespace AddisBookingAdmin.Controllers
             _context = context;
         }
 
-       
+        // GET: /Users/ProviderServices/{providerId}
         public IActionResult ProviderServices(int providerId)
         {
             var provider = _context.Providers.FirstOrDefault(p => p.Id == providerId);
