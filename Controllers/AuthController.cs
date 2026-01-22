@@ -68,7 +68,6 @@ namespace AddisBookingAdmin.Controllers
             return View();
         }
 
-        // POST: /Auth/Register
         [HttpPost]
         public async Task<IActionResult> Register(RegisterDto model)
         {

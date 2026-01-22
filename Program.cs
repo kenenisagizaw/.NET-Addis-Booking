@@ -17,7 +17,8 @@ builder.Services.AddControllersWithViews();
 // DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var cs = Environment.GetEnvironmentVariable("DATABASE_URL");
+    // Direct connection string for local development
+    var cs = "Host=localhost;Port=5432;Database=capstone_db;Username=postgres;Password=1937205";
     options.UseNpgsql(cs);
 });
 

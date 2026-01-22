@@ -6,12 +6,10 @@ using System.Text;
 
 namespace AddisBookingAdmin.Services
 {
-    // Service for generating JWT tokens
     public class JwtService
     {
         private readonly IConfiguration _config; // App configuration
 
-        // Constructor: injects configuration
         public JwtService(IConfiguration config)
         {
             _config = config;
@@ -20,7 +18,6 @@ namespace AddisBookingAdmin.Services
         // Generates a JWT token for the given user
         public string GenerateToken(User user)
         {
-            // Define claims for the token
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // User ID
@@ -33,7 +30,6 @@ namespace AddisBookingAdmin.Services
                 Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)
             );
 
-            // Create signing credentials
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             // Build the JWT token
