@@ -40,7 +40,6 @@ namespace AddisBookingAdmin.Controllers
                 return View(model);
             }
 
-            // Store session info
             HttpContext.Session.SetString("UserId", user.Id.ToString());
             HttpContext.Session.SetString("UserRole", user.Role.ToString());
 
