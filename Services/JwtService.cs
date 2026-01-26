@@ -8,7 +8,8 @@ namespace AddisBookingAdmin.Services
 {
     public class JwtService
     {
-        private readonly IConfiguration _config; 
+        private readonly IConfiguration _config; // App configuration
+
         public JwtService(IConfiguration config)
         {
             _config = config;
