@@ -15,7 +15,6 @@ namespace AddisBookingAdmin.Services
             _config = config;
         }
 
-        // Generates a JWT token for the given user
         public string GenerateToken(User user)
         {
             var claims = new[]
